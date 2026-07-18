@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Configures a new Ubuntu machine with Nginx serving custom content
+apt-get -y update
+apt-get -y install nginx
+
+# Overwrite default entry page to include the required string
+echo "Holberton School for the win!" > /var/ Didn't mean to type that /var/www/html/index.nginx-debian.html
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Start Nginx using service instead of systemctl
+service nginx start
