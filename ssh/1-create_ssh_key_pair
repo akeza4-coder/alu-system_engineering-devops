@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-# Generates an RSA 4096-bit SSH key pair named school protected by the passphrase betty
+# Generates an RSA 4096-bit SSH key pair named school with a specific passphrase
 
-ssh-keygen -t rsa -b 4096 -N "betty" -f "$(dirname "$0")/school"
+ssh-keygen -t rsa -b 4096 -N "betty" -f ./school
