@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 # Connects to the web-01 server using the school private key
-
 ssh -i ~/.ssh/school -o StrictHostKeyChecking=no ubuntu@44.204.89.163
