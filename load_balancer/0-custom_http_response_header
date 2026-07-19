@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Configures a new Ubuntu machine with Nginx and adds a custom HTTP response header
+# Configures Nginx with a custom HTTP response header named X-Served-By containing the hostname
 
 # Update package lists
 apt-get update -y
@@ -7,13 +7,13 @@ apt-get update -y
 # Install Nginx web server
 apt-get install nginx -y
 
-# Configure Nginx default server block to include custom header X-Served-By
+# Insert the X-Served-By header directive inside the default Nginx server configuration block
 sed -i '/listen 80 default_server;/a \add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
 
-# Ensure the root page contains the mandatory string from previous tasks
+# Create the standard web root file with the validation string from previous web server tasks
 mkdir -p /var/www/html
 echo "Holberton School for the win!" > /var/www/html/index.html
 
-# Start and restart the service safely without using systemctl
+# Start and restart the service safely without systemctl
 service nginx start
 service nginx restart
