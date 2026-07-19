@@ -7,10 +7,10 @@ apt-get update -y
 # Install Nginx web server
 apt-get install nginx -y
 
-# Insert the X-Served-By header directive inside the default Nginx server configuration block
+# shellcheck disable=SC2016
 sed -i '/listen 80 default_server;/a \add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
 
-# Create the standard web root file with the validation string from previous web server tasks
+# Create the standard web root file with the validation string
 mkdir -p /var/www/html
 echo "Holberton School for the win!" > /var/www/html/index.html
 
