@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# This script configures Nginx to issue a 301 redirect from /redirect_me to a new page
+
+# Update package lists and install Nginx
+apt-get update -y
+apt-get install nginx -y
+
+# Configure the Nginx default server block with the 301 redirection rule
+cat << 'INNER_EOF' > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # 301 Redirection rule for /redirect_me
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+INNER_EOF
+
+# Ensure the root file exists with the string from task 1
+mkdir -p /var/www/html
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Force start/restart Nginx using service instead of systemctl
+service nginx start
+service nginx restart
