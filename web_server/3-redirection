@@ -5,7 +5,7 @@
 apt-get update -y
 apt-get install nginx -y
 
-# Configure the Nginx default server block with the 301 redirection rule
+# Configure Nginx default server block using an absolute rewrite rule
 cat << 'INNER_EOF' > /etc/nginx/sites-available/default
 server {
     listen 80 default_server;
@@ -16,13 +16,11 @@ server {
 
     server_name _;
 
+    # 301 Redirection using rewrite to capture variations with or without a trailing slash
+    rewrite ^/redirect_me/?(.*)$ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
+
     location / {
         try_files $uri $uri/ =404;
-    }
-
-    # 301 Redirection rule for /redirect_me
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
 }
 INNER_EOF
