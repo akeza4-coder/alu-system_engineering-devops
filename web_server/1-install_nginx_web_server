@@ -7,8 +7,10 @@ apt-get update -y
 # Install Nginx
 apt-get install nginx -y
 
-# Configure the default root page to return the required string
+# Ensure directory exists and create the required file
+mkdir -p /var/www/html
 echo "Holberton School for the win!" > /var/www/html/index.html
 
-# Start the service explicitly using 'service' instead of 'systemctl'
+# Force-start the service cleanly using service (avoiding systemctl)
 service nginx start
+service nginx restart
