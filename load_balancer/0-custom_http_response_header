@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Configures a new Ubuntu machine with Nginx and adds a custom HTTP response header
+
+# Update package lists
+apt-get update -y
+
+# Install Nginx web server
+apt-get install nginx -y
+
+# Configure Nginx default server block to include custom header X-Served-By
+sed -i '/listen 80 default_server;/a \add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
+
+# Ensure the root page contains the mandatory string from previous tasks
+mkdir -p /var/www/html
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Start and restart the service safely without using systemctl
+service nginx start
+service nginx restart
