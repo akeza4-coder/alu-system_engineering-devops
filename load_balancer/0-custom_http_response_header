@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
-# Configures Nginx with a custom HTTP response header named X-Served-By containing the hostname
+# Configures Nginx to add a custom X-Served-By response header
+# containing the server's hostname
 
-# Update package lists
-apt-get update -y
+# shellcheck disable=SC2154
 
-# Install Nginx web server
-apt-get install nginx -y
+# Update package list
+apt-get update
 
-# shellcheck disable=SC2016
-sed -i '/listen 80 default_server;/a \add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
+# Install nginx non-interactively
+apt-get install -y nginx
 
-# Create the standard web root file with the validation string
-mkdir -p /var/www/html
+# Custom index page nginx will serve
 echo "Holberton School for the win!" > /var/www/html/index.html
 
-# Start and restart the service safely without systemctl
-service nginx start
+# Add the X-Served-By header (value = server hostname) inside
+# the default server block, right after "listen 80 default_server;"
+sed -i "/listen 80 default_server;/a\\\tadd_header X-Served-By \$HOSTNAME always;" /etc/nginx/sites-enabled/default
+
+# Restart nginx to apply the config change (systemctl not allowed)
 service nginx restart
