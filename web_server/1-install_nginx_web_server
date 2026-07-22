@@ -1,31 +1,14 @@
 #!/usr/bin/env bash
-# Configures a new Ubuntu machine with Nginx meeting all specific checker requirements
+# Script that installs and configures an Nginx web server
 
-# Update and install Nginx
-apt-get update -y
-apt-get install nginx -y
+# 1. Update package lists
+sudo apt-get update -y
 
-# Configure Nginx default site configuration to ensure it serves the correct text on port 80
-cat << 'INNER_EOF' > /etc/nginx/sites-available/default
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+# 2. Install Nginx non-interactively
+sudo apt-get install -y nginx
 
-    root /var/www/html;
-    index index.html index.htm;
+# 3. Write "Holberton School" content to default HTML root file
+echo "Holberton School for the win!" | sudo tee /var/www/html/index.html > /dev/null
 
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-INNER_EOF
-
-# Ensure the web root exists and has the mandatory string
-mkdir -p /var/www/html
-echo "Holberton School for the win!" > /var/www/html/index.html
-
-# Start and refresh the service without using systemctl
-service nginx start
-service nginx restart
+# 4. Start Nginx service without using systemctl
+sudo service nginx start
