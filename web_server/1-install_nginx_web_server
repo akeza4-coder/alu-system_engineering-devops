@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 # Script that installs and configures an Nginx web server
 
-# 1. Update package lists
 sudo apt-get update -y
-
-# 2. Install Nginx non-interactively
 sudo apt-get install -y nginx
-
-# 3. Write "Holberton School" content to default HTML root file
 echo "Holberton School for the win!" | sudo tee /var/www/html/index.html > /dev/null
-
-# 4. Start Nginx service without using systemctl
-sudo service nginx start
+sudo service nginx restart
