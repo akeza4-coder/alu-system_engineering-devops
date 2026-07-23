@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# Configures a new Ubuntu machine to install and setup HAProxy
+# Installs and configures HAProxy to load balance traffic between web-01 and web-02 using roundrobin
 
+# Update package lists and install HAProxy
 sudo apt-get update -y
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y haproxy
 
-if [ -f /etc/default/haproxy ]; then
-    sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
-fi
+# Enable HAProxy init script management
+sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 
+# Append frontend and backend configuration to /etc/haproxy/haproxy.cfg
 if ! grep -q "frontend http_front" /etc/haproxy/haproxy.cfg; then
-    cat <<'HACONF' | sudo tee -a /etc/haproxy/haproxy.cfg
+cat << 'HAPROXY_CONFIG' | sudo tee -a /etc/haproxy/haproxy.cfg > /dev/null
 
 frontend http_front
     bind *:80
@@ -21,7 +22,8 @@ backend http_back
     balance roundrobin
     server 7086-web-01 44.203.87.180:80 check
     server 7086-web-02 44.202.132.213:80 check
-HACONF
+HAPROXY_CONFIG
 fi
 
+# Restart HAProxy using init service script
 sudo service haproxy restart
