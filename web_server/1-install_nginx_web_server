@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
-# Script that installs and configures an Nginx web server
+# Configures an Ubuntu machine with Nginx serving 'Holberton School' at root /
 
+# Update packages and install Nginx
 sudo apt-get update -y
-sudo apt-get install -y nginx
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y nginx
+
+# Configure the index page to serve 'Holberton School for the win!'
 echo "Holberton School for the win!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Restart Nginx without systemctl
 sudo service nginx restart
