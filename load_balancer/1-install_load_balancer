@@ -1,44 +1,27 @@
 #!/usr/bin/env bash
-# Configures HAProxy on a new Ubuntu machine to load balance traffic between web-01 and web-02
+# Installs and configures HAProxy on a new Ubuntu machine
 
-# Update system package lists and install HAProxy
-apt-get update -y
-apt-get install -y haproxy
+sudo apt-get update -y
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y haproxy
 
-# Enable HAProxy via init script setup
 if [ -f /etc/default/haproxy ]; then
-    sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+    sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 fi
 
-# Overwrite /etc/haproxy/haproxy.cfg with full clean configuration
-cat << 'CONFIG' > /etc/haproxy/haproxy.cfg
-global
-log /dev/loglocal0
-log /dev/loglocal1 notice
-chroot /var/lib/haproxy
-user haproxy
-group haproxy
-daemon
-
-defaults
-logglobal
-modehttp
-optionhttplog
-optiondontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
+if ! grep -q "frontend http_front" /etc/haproxy/haproxy.cfg; then
+    cat <<'HACONF' | sudo tee -a /etc/haproxy/haproxy.cfg
 
 frontend http_front
-bind *:80
-mode http
-default_backend http_back
+    bind *:80
+    mode http
+    default_backend http_back
 
 backend http_back
-balance roundrobin
-server 7086-web-01 44.204.89.163:80 check
-server 7086-web-02 184.72.119.63:80 check
-CONFIG
+    mode http
+    balance roundrobin
+    server 7086-web-01 44.203.87.180:80 check
+    server 7086-web-02 44.202.132.213:80 check
+HACONF
+fi
 
-# Restart HAProxy service to apply changes
-service haproxy restart
+sudo service haproxy restart
