@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# Installs and configures HAProxy on a new Ubuntu machine
+# Configures a new Ubuntu machine to install and setup HAProxy
 
+# Update packages and install HAProxy
 sudo apt-get update -y
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y haproxy
 
+# Enable HAProxy via init script
 if [ -f /etc/default/haproxy ]; then
     sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 fi
 
+# Append HAProxy frontend and backend configuration
 if ! grep -q "frontend http_front" /etc/haproxy/haproxy.cfg; then
     cat <<'HACONF' | sudo tee -a /etc/haproxy/haproxy.cfg
 
@@ -24,4 +27,5 @@ backend http_back
 HACONF
 fi
 
+# Restart HAProxy service
 sudo service haproxy restart
