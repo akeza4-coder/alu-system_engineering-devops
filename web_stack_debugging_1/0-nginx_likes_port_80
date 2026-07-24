@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Fixes Nginx configuration to listen on port 80 and restarts Nginx
+# Fixes Nginx configuration to listen on port 80 and ensures service is active
 
-# Replace port 8080 or any other custom port with 80 in default sites
-sed -i 's/listen [0-9]\+/listen 80/g' /etc/nginx/sites-available/default
+# 1. Replace any occurrence of 8080 (or custom ports) in all active site configs
 sed -i 's/8080/80/g' /etc/nginx/sites-available/default
+sed -i 's/8080/80/g' /etc/nginx/sites-enabled/default 2>/dev/null || true
 
-# Stop apache if running (prevents port 80 conflict)
+# 2. Stop Apache in case it is binding to port 80
 service apache2 stop 2>/dev/null || true
 
-# Start/restart nginx
-service nginx restart
+# 3. Start or restart Nginx
+service nginx restart || service nginx start
