@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Configures a fresh Ubuntu machine to run Nginx and serve
+# a page containing "Holberton School" at the root (/) endpoint.
+
+# Update the package list and install nginx (no interactive prompts)
+apt-get update -y
+apt-get install -y nginx
+
+# Make sure nginx listens on port 80 (default.conf already does, but
+# we set it explicitly in case the file was altered)
+sed -i 's/listen .*80.*/listen 80 default_server;/' /etc/nginx/sites-available/default
+
+# Create the index page that curl / must return
+echo "Holberton School!" > /var/www/html/index.html
+
+# Restart nginx without using systemctl
+service nginx restart
