@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Fixes Apache web server to serve 'Hello Holberton'
+# Fixes Apache web server to serve Hello Holberton
 
 service apache2 start
 echo "Hello Holberton" > /var/www/html/index.html
