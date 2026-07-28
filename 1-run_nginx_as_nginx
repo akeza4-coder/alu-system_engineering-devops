@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 # Configures Nginx to run as nginx user and listen on port 8080
 
-# 1. Safely replace port 80 with 8080
-sed -i 's/listen 80 default_server;/listen 8080 default_server;/g' /etc/nginx/sites-available/default
-sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:8080 default_server;/g' /etc/nginx/sites-available/default
-sed -i 's/listen 80;/listen 8080;/g' /etc/nginx/sites-available/default
+# Configure Nginx master process to run as nginx user instead of root
+sed -i 's/user www-data;/user nginx;/g' /etc/nginx/nginx.conf
+sed -i 's/user root;/user nginx;/g' /etc/nginx/nginx.conf
 
-# 2. Stop any active Nginx processes
-service nginx stop
-pkill nginx
+# Configure default site to listen on port 8080
+sed -i 's/80/8080/g' /etc/nginx/sites-available/default
 
-# 3. Ensure proper ownership for the nginx user
-chown -R nginx:nginx /var/lib/nginx /var/log/nginx /etc/nginx
+# Fix file permissions so nginx user can access Nginx files
+chown -R nginx:nginx /var/log/nginx /var/lib/nginx /etc/nginx
 
-# 4. Start Nginx under the nginx user
-su -c "nginx" nginx
+# Restart Nginx service as nginx user
+su -c "service nginx restart" nginx
